@@ -28,8 +28,8 @@ export default function Preloader() {
 
   useGSAP(() => {
     document.fonts.ready.then(() => {
-      // Header elements prepared for entrance
-      gsap.set(".main-header", { opacity: 0 });
+      // Prepare hero section & header to fade in smoothly under preloader
+      gsap.set(".main-header, .scrub-story", { opacity: 0 });
       gsap.set(".nav-logo img", { scale: 0 });
       gsap.set(".nav-link .text-fill .letter", { yPercent: 100, y: 0 });
       gsap.set(".nav-link .text-outline .letter", { yPercent: 100, y: 0 });
@@ -48,19 +48,25 @@ export default function Preloader() {
 
       // 3. START Hero reveal: Remove preloader-active class FROM BODY IMMEDIATELY so layout unfreezes
       t1.add(() => {
-        console.log("[Preloader] Curtain exit started, removing preloader-active class at timestamp:", performance.now());
         document.body.classList.remove("preloader-active");
         ScrollTrigger.refresh();
-        const heroCopy = document.querySelector(".scrub-story .hero-copy") as any;
-        if (heroCopy && typeof heroCopy.in === "function") {
-          heroCopy.in();
-        }
       });
 
       // 4. Exit logo & preloader curtain into Hero section + Header
       t1.to(".preloader-logo", { y: "-100vh", opacity: 0, duration: 0.5, ease: "power2.in" });
       t1.to(".preloader-bg", { opacity: 0, duration: 0.4 }, "-=0.3");
-      t1.to(".main-header", { opacity: 1, duration: 0.5, ease: "power2.out" }, "-=0.4");
+      t1.to(".main-header, .scrub-story", {
+        opacity: 1,
+        duration: 0.6,
+        ease: "power2.out",
+        onStart: () => {
+          // Trigger Hero title and copy entrance animation synchronously
+          const heroCopy = document.querySelector(".scrub-story .hero-copy") as any;
+          if (heroCopy && typeof heroCopy.in === "function") {
+            heroCopy.in();
+          }
+        },
+      }, "-=0.5");
 
       // 5. Reveal navbar logo and nav links
       t1.to(".nav-logo img", { scale: 1, duration: 0.5, ease: "power3.out" }, "-=0.3");
