@@ -37,27 +37,43 @@ export default function Preloader() {
       gsap.set(".preloader-logo", { scale: 0.7, opacity: 0 });
       gsap.set(".preloader-revealer", { clipPath: "circle(0% at 50% 50%)" });
 
-      const t1 = gsap.timeline({ delay: 0.2, onComplete: initNavbarHover });
+      const t1 = gsap.timeline({ delay: 0.1, onComplete: initNavbarHover });
 
       // 1. Circle animation plays FIRST from center (50% 50%)
-      t1.to(".preloader-revealer", { clipPath: "circle(100% at 50% 50%)", duration: 0.9, stagger: 0.15, ease: "power2.inOut" });
+      t1.to(".preloader-revealer", { clipPath: "circle(100% at 50% 50%)", duration: 0.8, stagger: 0.12, ease: "power2.inOut" });
 
       // 2. THEN Bro'etza logo appears in center
-      t1.to(".preloader-logo", { scale: 1, opacity: 1, duration: 0.8, ease: "power3.out" }, "-=0.3");
-      t1.to({}, { duration: 0.5 }); // Short hold
+      t1.to(".preloader-logo", { scale: 1, opacity: 1, duration: 0.7, ease: "power3.out" }, "-=0.2");
+      t1.to({}, { duration: 0.4 }); // Short hold
 
-      // 3. Exit logo & preloader curtain into Hero section + Header
-      t1.to(".preloader-logo", { y: "-100vh", opacity: 0, duration: 0.6, ease: "power2.in" });
-      t1.to(".preloader-bg", { opacity: 0, duration: 0.5 }, "-=0.4");
-      t1.to(".main-header, .scrub-story", { opacity: 1, duration: 0.8, ease: "power2.out" }, "-=0.6");
+      // 3. START Hero reveal: Remove preloader-active class FROM BODY IMMEDIATELY so layout unfreezes
+      t1.add(() => {
+        document.body.classList.remove("preloader-active");
+        ScrollTrigger.refresh();
+      });
 
-      // 4. Reveal navbar logo and nav links
-      t1.to(".nav-logo img", { scale: 1, duration: 0.6, ease: "power3.out" }, "-=0.4");
-      t1.to(".nav-items .nav-link .text-fill .letter", { yPercent: 0, duration: 0.6, ease: "power3.out", stagger: 0.02 }, "<");
+      // 4. Exit logo & preloader curtain into Hero section + Header
+      t1.to(".preloader-logo", { y: "-100vh", opacity: 0, duration: 0.5, ease: "power2.in" });
+      t1.to(".preloader-bg", { opacity: 0, duration: 0.4 }, "-=0.3");
+      t1.to(".main-header, .scrub-story", {
+        opacity: 1,
+        duration: 0.6,
+        ease: "power2.out",
+        onStart: () => {
+          // Trigger Hero title and copy entrance animation synchronously
+          const heroCopy = document.querySelector(".scrub-story .hero-copy") as any;
+          if (heroCopy && typeof heroCopy.in === "function") {
+            heroCopy.in();
+          }
+        },
+      }, "-=0.5");
+
+      // 5. Reveal navbar logo and nav links
+      t1.to(".nav-logo img", { scale: 1, duration: 0.5, ease: "power3.out" }, "-=0.3");
+      t1.to(".nav-items .nav-link .text-fill .letter", { yPercent: 0, duration: 0.5, ease: "power3.out", stagger: 0.02 }, "<");
 
       t1.set(".preloader", { display: "none" });
       t1.add(() => {
-        document.body.classList.remove("preloader-active");
         ScrollTrigger.refresh();
       });
     });

@@ -84,18 +84,21 @@ export default function VideoScrub() {
       const pLines = new SplitText(p, { type: "lines" }).lines;
       const extras = [eyebrow, btn].filter(Boolean) as HTMLElement[];
       const heroCopyElements = [...h1Words, ...pLines, ...extras];
+
+      // Keep heroCopy container visible; SplitText words animate from yPercent: 120, opacity: 0
+      gsap.set(heroCopy, { visibility: "visible", opacity: 1, pointerEvents: "auto" });
       gsap.set(heroCopyElements, { yPercent: 120, rotateZ: 4, opacity: 0 });
-      gsap.set(heroCopy, { visibility: "hidden" });
 
       heroCopy.in = () => {
         if (isHeroCopyVisible) return;
         isHeroCopyVisible = true;
         gsap.killTweensOf(heroCopyElements);
-        gsap.set(heroCopy, { visibility: "visible", pointerEvents: "auto" });
-        gsap.to(h1Words, { yPercent: 0, rotateZ: 0, opacity: 1, duration: 1.2, stagger: 0.05, ease: "power4.out", overwrite: "auto" });
-        gsap.to(extras, { yPercent: 0, rotateZ: 0, opacity: 1, duration: 1.2, stagger: 0.1, ease: "power4.out", overwrite: "auto", delay: 0.1 });
-        gsap.to(pLines, { yPercent: 0, rotateZ: 0, opacity: 1, duration: 1.2, stagger: 0.05, ease: "power4.out", overwrite: "auto", delay: 0.2 });
+        gsap.set(heroCopy, { visibility: "visible", opacity: 1, pointerEvents: "auto" });
+        gsap.to(h1Words, { yPercent: 0, rotateZ: 0, opacity: 1, duration: 1.0, stagger: 0.04, ease: "power4.out", overwrite: "auto" });
+        gsap.to(extras, { yPercent: 0, rotateZ: 0, opacity: 1, duration: 1.0, stagger: 0.08, ease: "power4.out", overwrite: "auto", delay: 0.1 });
+        gsap.to(pLines, { yPercent: 0, rotateZ: 0, opacity: 1, duration: 1.0, stagger: 0.04, ease: "power4.out", overwrite: "auto", delay: 0.15 });
       };
+
       heroCopy.out = () => {
         if (!isHeroCopyVisible) return;
         isHeroCopyVisible = false;

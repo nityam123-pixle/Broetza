@@ -164,8 +164,9 @@
     background: var(--ember);
 }
 
+html,
 body {
-    background-color: var(--base-500);
+    background-color: var(--base-400); /* Bro'etza Blue #374C8C baseline */
 }
 
 .post-script,
