@@ -92,6 +92,7 @@ export default function VideoScrub() {
       heroCopy.in = () => {
         if (isHeroCopyVisible) return;
         isHeroCopyVisible = true;
+        console.log("[HeroCopy] heroCopy.in() executed at timestamp:", performance.now());
         gsap.killTweensOf(heroCopyElements);
         gsap.set(heroCopy, { visibility: "visible", opacity: 1, pointerEvents: "auto" });
         gsap.to(h1Words, { yPercent: 0, rotateZ: 0, opacity: 1, duration: 1.0, stagger: 0.04, ease: "power4.out", overwrite: "auto" });
